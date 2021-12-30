@@ -15,7 +15,7 @@ var app = app || {};
 
 		// Save all of the todo items under this example's namespace.
 		// localStorage: new Backbone.LocalStorage('todos-backbone'),
-		url: process.env.TODO_APP_URL,
+		url: 'http:///todo-list-app-snchr.herokuapp.com:80/items',
 
 		// Filter down the list of all todo items that are finished.
 		completed: function () {
