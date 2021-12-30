@@ -2,11 +2,12 @@ from flask import Flask
 from flask_restful import Api
 from resources.item import Item, ItemList
 from db import db
+import os
 
 
 def create_app():
     app = Flask(__name__, static_url_path='')
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
+    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     api = Api(app)
     api.add_resource(ItemList, '/items')
