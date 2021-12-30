@@ -26,7 +26,9 @@ def init_db(app):
     db.init_app(app)
 
 
+app = create_app()
+init_db(app)
+
+
 if __name__ == '__main__':
-    app = create_app()
-    init_db(app)
     app.run(debug=True, port=443)
