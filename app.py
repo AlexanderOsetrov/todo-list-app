@@ -5,9 +5,14 @@ from db import db
 import os
 
 
+def get_database_url():
+    data_base_url = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+    return data_base_url.replace("postgres", "postgresql")
+
+
 def create_app():
     app = Flask(__name__, static_url_path='')
-    app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL', 'sqlite:///data.db')
+    app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
     app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     api = Api(app)
     api.add_resource(ItemList, '/items')
