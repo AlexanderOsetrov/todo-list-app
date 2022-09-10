@@ -1,8 +1,9 @@
-from flask import Flask
+from flask import Flask, render_template
 from flask_restful import Api
 from resources.item import Item, ItemList
 from db import db
 import os
+import json
 
 
 def get_database_url():
@@ -10,26 +11,37 @@ def get_database_url():
     return data_base_url.replace("postgres", "postgresql")
 
 
+def get_app_version():
+    try:
+        with open("app_version.json", "r") as version_file:
+            version_json = json.loads(version_file.read())
+            return version_json.get('version', 'unknown')
+    except FileNotFoundError:
+        return "unknown"
+
+
 def create_app():
-    app = Flask(__name__, static_url_path='')
-    app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
-    app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-    api = Api(app)
+    flask_app = Flask(__name__, static_url_path='')
+    flask_app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
+    flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    api = Api(flask_app)
     api.add_resource(ItemList, '/items')
     api.add_resource(Item, '/items/<item_id>')
-    @app.before_first_request
 
+    @app.before_first_request
     def create_tables():
         db.create_all()
 
     @app.route('/')
-    def root():
-        return app.send_static_file('index.html')
-    return app
+    def index():
+        todos = ItemList().get()
+        app_version = get_app_version()
+        return render_template('index.html', todos=todos, app_version=app_version)
+    return flask_app
 
 
-def init_db(app):
-    db.init_app(app)
+def init_db(flask_app):
+    db.init_app(flask_app)
 
 
 app = create_app()
