@@ -1,5 +1,26 @@
 from flask_restful import Resource, reqparse
 from models.item import ItemModel
+from flask import current_app as app
+from logging.config import dictConfig
+
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '%(asctime)s\t[%(name)s.%(funcName)s:%(lineno)d.%(levelname)s]\t%(message)s',
+        'datefmt' : '%b %d %H:%M:%S'
+    }},
+    'handlers': {
+        'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'}
+            },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['wsgi']
+    }
+})
 
 
 class Item(Resource):
@@ -18,14 +39,15 @@ class Item(Resource):
     def get(self, item_id):
         item = ItemModel.find_by_id(item_id)
         if item:
-            
+            app.logger.info("Got the item from DB: %s" % item.json())
             return item.json()
         else:
-            return {'message': f"Item '{item_id}' is not found"}, 404        
+            return {'message': f"Item '{item_id}' is not found"}, 404
 
     def delete(self, item_id):
         item = ItemModel.find_by_id(item_id)
         if item:
+            app.logger.info("Deleting the item from DB: %s" % item.json())
             item.delete_from_db()
             return {'message': f"Item '{item_id}' is deleted"}, 204
         else:
@@ -34,8 +56,10 @@ class Item(Resource):
     def put(self, item_id):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_id(item_id)
+        app.logger.info("Got the item from DB: %s" % item.json())
         item.title = data['title']
         item.completed = data['completed']
+        app.logger.info("Updating the item: %s" % item.json())
         item.save_to_db()
         return item.json()
 
@@ -43,12 +67,16 @@ class Item(Resource):
 class ItemList(Resource):
 
     def get(self):
-        return [item.json() for item in ItemModel.query.all()]
+        items = [item.json() for item in ItemModel.query.all()]
+        app.logger.info("Got items from DB: %s" % items)
+        return items
 
     def post(self):
         data = Item.parser.parse_args()
+        app.logger.info("Got request data from UI: %s" % data)
         item = ItemModel(**data)
         try:
+            app.logger.info("Adding the item to DB: %s" % item.json())
             item.save_to_db()
         except Exception:
             return {'message': "An error occured inserting the item"}, 500

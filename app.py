@@ -25,14 +25,14 @@ def create_app():
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     api = Api(flask_app)
-    api.add_resource(ItemList, '/items')
+    api.add_resource(ItemList, '/items', endpoint="items")
     api.add_resource(Item, '/items/<item_id>')
 
-    @app.before_first_request
+    @flask_app.before_first_request
     def create_tables():
         db.create_all()
 
-    @app.route('/')
+    @flask_app.route('/')
     def index():
         todos = ItemList().get()
         app_version = get_app_version()
