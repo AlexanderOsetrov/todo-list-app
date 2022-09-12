@@ -28,15 +28,21 @@ def create_app():
     api.add_resource(ItemList, '/items', endpoint="items")
     api.add_resource(Item, '/items/<item_id>')
 
+    from auth import auth as auth_blueprint
+    flask_app.register_blueprint(auth_blueprint)
+
+    from main import main as main_blueprint
+    flask_app.register_blueprint(main_blueprint)
+
     @flask_app.before_first_request
     def create_tables():
         db.create_all()
 
-    @flask_app.route('/')
-    def index():
-        todos = ItemList().get()
-        app_version = get_app_version()
-        return render_template('index.html', todos=todos, app_version=app_version)
+    # @flask_app.route('/')
+    # def index():
+    #     todos = ItemList().get()
+    #     app_version = get_app_version()
+    #     return render_template('todos.html', todos=todos, app_version=app_version)
     return flask_app
 
 
