@@ -20,10 +20,10 @@ def create_app():
     api.add_resource(ItemList, '/items', endpoint="items")
     api.add_resource(Item, '/items/<item_id>')
 
-    from auth import auth as auth_blueprint
+    from views.auth import auth as auth_blueprint
     flask_app.register_blueprint(auth_blueprint)
 
-    from main import main as main_blueprint
+    from views.main import main as main_blueprint
     flask_app.register_blueprint(main_blueprint)
 
     @flask_app.before_first_request
