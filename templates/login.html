@@ -2,8 +2,8 @@
 
 {% block content %}
 <div class="column is-4 is-offset-4">
-    <h3 class="title">Login</h3>
-    <div class="box">
+    <h3 class="display-5 text-danger text-opacity-25 text-center">Login</h3>
+    <div>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
         <div class="notification is-danger">
@@ -12,24 +12,19 @@
         {% endif %}
         {% endwith %}
         <form method="POST" action="/login">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Your Email" autofocus="">
-                </div>
+            <div class="mb-3">
+                <label for="InputEmail" class="form-label">Email address</label>
+                <input type="email" class="form-control" name="email" id="InputEmail">
             </div>
-
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Your Password">
-                </div>
+            <div class="mb-3">
+                <label for="InputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="InputPassword">
             </div>
-            <div class="field">
-                <label class="checkbox">
-                    <input type="checkbox" name="remember">
-                    Remember me
-                </label>
+            <div class="mb-3 form-check">
+                <input type="checkbox" name="remember" class="form-check-input" id="rememberCheck">
+                <label class="form-check-label" for="rememberCheck">Remember me</label>
             </div>
-            <button class="button is-block is-info is-large is-fullwidth">Login</button>
+            <button type="submit" class="btn btn-outline-danger">Login</button>
         </form>
     </div>
 </div>

@@ -1,8 +1,8 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="column is-4 is-offset-4">
-    <h3 class="title">Sign Up</h3>
+<div>
+    <h3 class="display-5 text-danger text-opacity-25 text-center">Sign Up</h3>
     <div class="box">
         {% with messages = get_flashed_messages() %}
         {% if messages %}
@@ -12,25 +12,19 @@
         {% endif %}
         {% endwith %}
         <form method="POST" action="/signup">
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="email" name="email" placeholder="Email" autofocus="">
-                </div>
+            <div class="mb-3">
+                <label for="InputEmail" class="form-label">Email address</label>
+                <input type="email" class="form-control" name="email" id="InputEmail">
             </div>
-
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="text" name="name" placeholder="Name" autofocus="">
-                </div>
+            <div class="mb-3">
+                <label for="InputName" class="form-label">Name</label>
+                <input type="text" class="form-control" name="name" id="InputName">
             </div>
-
-            <div class="field">
-                <div class="control">
-                    <input class="input is-large" type="password" name="password" placeholder="Password">
-                </div>
+            <div class="mb-3">
+                <label for="InputPassword" class="form-label">Password</label>
+                <input type="password" class="form-control" id="InputPassword">
             </div>
-
-            <button class="button is-block is-info is-large is-fullwidth">Sign Up</button>
+            <button type="submit" class="btn btn-outline-danger">Sign Up</button>
         </form>
     </div>
 </div>
