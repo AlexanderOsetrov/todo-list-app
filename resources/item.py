@@ -8,7 +8,7 @@ dictConfig({
     'version': 1,
     'formatters': {'default': {
         'format': '%(asctime)s\t[%(name)s.%(funcName)s:%(lineno)d.%(levelname)s]\t%(message)s',
-        'datefmt' : '%b %d %H:%M:%S'
+        'datefmt': '%b %d %H:%M:%S'
     }},
     'handlers': {
         'wsgi': {

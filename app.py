@@ -1,9 +1,9 @@
-from flask import Flask, render_template
+from flask import Flask
 from flask_restful import Api
 from resources.item import Item, ItemList
 from db import db
 import os
-import json
+from flask_login import LoginManager
 
 
 def get_database_url():
@@ -11,18 +11,10 @@ def get_database_url():
     return data_base_url.replace("postgres", "postgresql")
 
 
-def get_app_version():
-    try:
-        with open("app_version.json", "r") as version_file:
-            version_json = json.loads(version_file.read())
-            return version_json.get('version', 'unknown')
-    except FileNotFoundError:
-        return "unknown"
-
-
 def create_app():
     flask_app = Flask(__name__, static_url_path='')
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
+    flask_app.config['SECRET_KEY'] = 'secret'
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     api = Api(flask_app)
     api.add_resource(ItemList, '/items', endpoint="items")
@@ -38,21 +30,19 @@ def create_app():
     def create_tables():
         db.create_all()
 
-    # @flask_app.route('/')
-    # def index():
-    #     todos = ItemList().get()
-    #     app_version = get_app_version()
-    #     return render_template('todos.html', todos=todos, app_version=app_version)
+    db.init_app(flask_app)
+    login_manager = LoginManager()
+    login_manager.login_view = 'auth.login'
+    login_manager.init_app(flask_app)
+    from models.user import User
+
+    @login_manager.user_loader
+    def load_user(user_id):
+        return User.query.get(int(user_id))
+
     return flask_app
 
 
-def init_db(flask_app):
-    db.init_app(flask_app)
-
-
-app = create_app()
-init_db(app)
-
-
 if __name__ == '__main__':
+    app = create_app()
     app.run(debug=True, port=443)
