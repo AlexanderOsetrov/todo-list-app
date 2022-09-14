@@ -40,6 +40,8 @@ def create_app():
     flask_app.config['SECRET_KEY'] = 'secret'
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
     flask_app.config['JWT_TOKEN_LOCATION'] = ['cookies']
+    flask_app.config['JWT_COOKIE_CSRF_PROTECT'] = False
+    flask_app.config['USER_AUTHENTICATED'] = False
     api = Api(flask_app)
 
     jwt = JWTManager(flask_app)

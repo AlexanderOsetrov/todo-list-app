@@ -17,7 +17,7 @@
                             <li class="nav-item">
                                 <a class="nav-link active" aria-current="page" href="{{ url_for('main.index') }}">Home</a>
                             </li>
-                            {% if current_user.is_authenticated %}
+                            {% if config.USER_AUTHENTICATED %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('main.todos') }}">Todos</a>
                             </li>
@@ -28,12 +28,12 @@
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign Up</a>
                             </li>
-                            {% if current_user.is_authenticated %}
+                            {% if config.USER_AUTHENTICATED %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
                             </li>
                             {% endif %}
-                            {% if current_user.is_authenticated %}
+                            {% if config.USER_AUTHENTICATED %}
                             <li class="nav-item">
                                 <a class="nav-link link-danger">Hi, {{ current_user.name }}!</a>
                             </li>

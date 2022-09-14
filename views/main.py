@@ -1,6 +1,6 @@
 import json
 from models.item import ItemModel
-from flask_login import login_required
+from flask_jwt_extended import jwt_required
 from flask import Blueprint, render_template
 
 
@@ -22,7 +22,7 @@ def index():
 
 
 @main.route('/todos')
-@login_required
+@jwt_required()
 def todos():
     todo_list = [item.json() for item in ItemModel.query.all()]
     return render_template('todos.html', todos=todo_list, app_version=get_app_version())

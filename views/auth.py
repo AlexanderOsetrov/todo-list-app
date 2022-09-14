@@ -1,8 +1,9 @@
 from db import db
 from models.user import UserModel
-from flask_login import login_user, login_required, logout_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask import make_response, current_app
+from flask_jwt_extended import create_access_token, create_refresh_token, unset_jwt_cookies, jwt_required, verify_jwt_in_request
 
 
 auth = Blueprint('auth', __name__)
@@ -22,8 +23,13 @@ def login_post():
     if not user or not check_password_hash(user.password, password):
         flash('Wrong password or email!')
         return redirect(url_for('auth.login'))
-    login_user(user, remember=remember)
-    return redirect(url_for('main.todos'))
+    response = make_response(redirect(url_for('main.todos')))
+    access_token = create_access_token(identity=user.id, fresh=True)
+    refresh_token = create_refresh_token(user.id)
+    response.set_cookie('access_token_cookie', access_token)
+    response.set_cookie('refresh_token_cookie', refresh_token)
+    current_app.config['USER_AUTHENTICATED'] = True
+    return response
 
 
 @auth.route('/signup')
@@ -47,7 +53,9 @@ def signup_post():
 
 
 @auth.route('/logout')
-@login_required
+@jwt_required()
 def logout():
-    logout_user()
-    return redirect(url_for('main.index'))
+    response = make_response(redirect(url_for('main.index')))
+    unset_jwt_cookies(response)
+    current_app.config['USER_AUTHENTICATED'] = False
+    return response

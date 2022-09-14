@@ -1,12 +1,9 @@
-import json
-
 from flask_restful import Resource, reqparse
 from models.user import UserModel
 from flask import current_app as app
 from flask_jwt_extended import (create_access_token, create_refresh_token,
-                                jwt_required, set_access_cookies, set_refresh_cookies)
+                                jwt_required)
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask import jsonify, Response
 
 
 class UserRegister(Resource):
@@ -76,5 +73,4 @@ class UserLogin(Resource):
         refresh_token = create_refresh_token(user.id)
         headers = [('Set-Cookie', f'access_token_cookie={access_token}'),
                    ('Set-Cookie', f'refresh_token_cookie={refresh_token}')]
-
         return {'login': True}, 200, headers
