@@ -1,9 +1,32 @@
+import os
+from db import db
 from flask import Flask
 from flask_restful import Api
-from resources.item import Item, ItemList
-from db import db
-import os
+from models.user import UserModel
 from flask_login import LoginManager
+from logging.config import dictConfig
+from flask_jwt_extended import JWTManager
+from resources.item import Item, ItemList
+from resources.user import UserRegister, UserLogin
+
+
+dictConfig({
+    'version': 1,
+    'formatters': {'default': {
+        'format': '%(asctime)s\t[%(name)s.%(funcName)s:%(lineno)d.%(levelname)s]\t%(message)s',
+        'datefmt': '%b %d %H:%M:%S'
+    }},
+    'handlers': {
+        'wsgi': {
+            'class': 'logging.StreamHandler',
+            'stream': 'ext://flask.logging.wsgi_errors_stream',
+            'formatter': 'default'}
+            },
+    'root': {
+        'level': 'DEBUG',
+        'handlers': ['wsgi']
+    }
+})
 
 
 def get_database_url():
@@ -16,9 +39,14 @@ def create_app():
     flask_app.config['SQLALCHEMY_DATABASE_URI'] = get_database_url()
     flask_app.config['SECRET_KEY'] = 'secret'
     flask_app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
+    flask_app.config['JWT_TOKEN_LOCATION'] = ['cookies']
     api = Api(flask_app)
-    api.add_resource(ItemList, '/items', endpoint="items")
-    api.add_resource(Item, '/items/<item_id>')
+
+    jwt = JWTManager(flask_app)
+    api.add_resource(ItemList, '/api/items', endpoint="items")
+    api.add_resource(Item, '/api/items/<item_id>')
+    api.add_resource(UserRegister, '/api/register')
+    api.add_resource(UserLogin, '/api/login')
 
     from views.auth import auth as auth_blueprint
     flask_app.register_blueprint(auth_blueprint)
@@ -34,11 +62,10 @@ def create_app():
     login_manager = LoginManager()
     login_manager.login_view = 'auth.login'
     login_manager.init_app(flask_app)
-    from models.user import User
 
     @login_manager.user_loader
     def load_user(user_id):
-        return User.query.get(int(user_id))
+        return UserModel.query.get(int(user_id))
 
     return flask_app
 

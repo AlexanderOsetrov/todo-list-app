@@ -1,7 +1,7 @@
-from flask import Blueprint, render_template
 import json
-from resources.item import ItemList
-from flask_login import login_required, current_user
+from models.item import ItemModel
+from flask_login import login_required
+from flask import Blueprint, render_template
 
 
 main = Blueprint('main', __name__)
@@ -24,5 +24,5 @@ def index():
 @main.route('/todos')
 @login_required
 def todos():
-    todo_list = ItemList().get()
+    todo_list = [item.json() for item in ItemModel.query.all()]
     return render_template('todos.html', todos=todo_list, app_version=get_app_version())

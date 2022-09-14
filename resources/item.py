@@ -1,42 +1,24 @@
-from flask_restful import Resource, reqparse
 from models.item import ItemModel
 from flask import current_app as app
-from logging.config import dictConfig
-
-
-dictConfig({
-    'version': 1,
-    'formatters': {'default': {
-        'format': '%(asctime)s\t[%(name)s.%(funcName)s:%(lineno)d.%(levelname)s]\t%(message)s',
-        'datefmt': '%b %d %H:%M:%S'
-    }},
-    'handlers': {
-        'wsgi': {
-            'class': 'logging.StreamHandler',
-            'stream': 'ext://flask.logging.wsgi_errors_stream',
-            'formatter': 'default'}
-            },
-    'root': {
-        'level': 'DEBUG',
-        'handlers': ['wsgi']
-    }
-})
+from flask_jwt_extended import jwt_required
+from flask_restful import Resource, reqparse
 
 
 class Item(Resource):
 
     parser = reqparse.RequestParser()
     parser.add_argument(
-        'title', type=str, required=True, help="Parameter 'title' is not provoded"
+        'title', type=str, required=True, help="Parameter 'title' is not provided"
     )
     parser.add_argument(
-        'completed', type=bool, required=True, help="Parameter 'completed' is not provoded"
+        'completed', type=bool, required=True, help="Parameter 'completed' is not provided"
     )
     parser.add_argument(
-        'order', type=int, required=True, help="Parameter 'order' is not provoded"
+        'order', type=int, required=True, help="Parameter 'order' is not provided"
     )
 
-    def get(self, item_id):
+    @jwt_required()
+    def get(self, item_id: int):
         item = ItemModel.find_by_id(item_id)
         if item:
             app.logger.info("Got the item from DB: %s" % item.json())
@@ -44,7 +26,8 @@ class Item(Resource):
         else:
             return {'message': f"Item '{item_id}' is not found"}, 404
 
-    def delete(self, item_id):
+    @jwt_required()
+    def delete(self, item_id: int):
         item = ItemModel.find_by_id(item_id)
         if item:
             app.logger.info("Deleting the item from DB: %s" % item.json())
@@ -53,7 +36,8 @@ class Item(Resource):
         else:
             return {'message': f"Item '{item_id}' is not found"}, 404
 
-    def put(self, item_id):
+    @jwt_required
+    def put(self, item_id: int):
         data = Item.parser.parse_args()
         item = ItemModel.find_by_id(item_id)
         app.logger.info("Got the item from DB: %s" % item.json())
@@ -66,11 +50,13 @@ class Item(Resource):
 
 class ItemList(Resource):
 
+    @jwt_required()
     def get(self):
         items = [item.json() for item in ItemModel.query.all()]
         app.logger.info("Got items from DB: %s" % items)
         return items
 
+    @jwt_required()
     def post(self):
         data = Item.parser.parse_args()
         app.logger.info("Got request data from UI: %s" % data)
@@ -78,10 +64,12 @@ class ItemList(Resource):
         try:
             app.logger.info("Adding the item to DB: %s" % item.json())
             item.save_to_db()
-        except Exception:
-            return {'message': "An error occured inserting the item"}, 500
+        except Exception as e:
+            app.logger.debug("An exception occurred: %s" % e)
+            return {'message': "An error occurred inserting the item"}, 500
         return item.json(), 201
 
+    @jwt_required()
     def delete(self):
         ItemModel.delete_all()
         return [item.json() for item in ItemModel.query.all()]
