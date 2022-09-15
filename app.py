@@ -1,12 +1,12 @@
 import os
 import json
 from db import db
-from datetime import datetime
+from datetime import timedelta
 from flask import Flask, current_app
 from flask_restful import Api
 from logging.config import dictConfig
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
-from resources.item import Item, ItemList
+from resources.item import Item, ItemList, UserItem
 from resources.user import UserRegister, UserLogin
 from models.user import UserModel
 from werkzeug.security import generate_password_hash
@@ -46,22 +46,14 @@ def get_database_url():
 
 
 def verify_authentication():
-    token = verify_jwt_in_request(optional=True)
+    token = verify_jwt_in_request(optional=True, refresh=True)
     if token is None:
         current_app.logger.debug(f"JWT Token is missing.")
         current_app.config['USER_AUTHENTICATED'] = False
     else:
-        try:
-            expire_time = token[-1].get("exp")
-            if int(expire_time) < int(datetime.now().timestamp()):
-                current_app.logger.debug(f"JWT Token Expired:\n%s" % token[-1])
-                current_app.config['USER_AUTHENTICATED'] = False
-            else:
-                current_app.config['USER_AUTHENTICATED'] = True
-                current_app.config['CURRENT_USER'] = token[-1].get("user", 'guest')
-        except Exception as e:
-            current_app.logger.debug("En exception occurred:\n%s" % e)
-            current_app.config['USER_AUTHENTICATED'] = False
+        current_app.logger.debug("JWT Token found: %s" % token[-1])
+        current_app.config['USER_AUTHENTICATED'] = True
+        current_app.config['CURRENT_USER'] = token[-1].get("user", 'guest')
 
 
 def set_app_config(flask_app):
@@ -73,6 +65,7 @@ def set_app_config(flask_app):
     flask_app.config['CURRENT_USER'] = 'guest'
     flask_app.config['USER_AUTHENTICATED'] = False
     flask_app.config['APP_VERSION'] = f"Ver. {get_app_version()}"
+    flask_app.config["JWT_ACCESS_TOKEN_EXPIRES"] = timedelta(hours=1)
 
 
 def register_api_resources(api):
@@ -80,6 +73,8 @@ def register_api_resources(api):
     api.add_resource(Item, '/api/items/<item_id>')
     api.add_resource(UserRegister, '/api/register')
     api.add_resource(UserLogin, '/api/login')
+    api.add_resource(UserItem, '/api/user/<user_id>/items', endpoint="user_items")
+    api.add_resource(UserItem, '/api/user/<user_id>/items/<item_id>')
 
 
 def create_default_admin(flask_app):
