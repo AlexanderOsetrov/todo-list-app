@@ -9,7 +9,6 @@ class ItemModel(db.Model):
     completed = db.Column(db.Boolean)
     order = db.Column(db.Integer)
 
-
     def __init__(self, title, completed, order):
         self.title = title
         self.completed = completed
