@@ -35,9 +35,12 @@
                             {% endif %}
                             {% if config.USER_AUTHENTICATED %}
                             <li class="nav-item">
-                                <a class="nav-link link-danger">Hi, {{ current_user.name }}!</a>
+                                <a class="nav-link link-danger">Hi, {{ config.CURRENT_USER }}!</a>
                             </li>
                             {% endif %}
+                            <li class="nav-item">
+                                <a class="nav-link">{{ config.APP_VERSION }}</a>
+                            </li>
                         </ul>
                     </div>
                 </div>

@@ -30,6 +30,10 @@ class UserModel(db.Model):
         return cls.query.filter_by(email=email).first()
 
     @classmethod
+    def find_by_name(cls, name):
+        return cls.query.filter_by(name=name).first()
+
+    @classmethod
     def find_by_id(cls, user_id):
         return cls.query.filter_by(id=user_id).first()
 
