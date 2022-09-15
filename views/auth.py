@@ -25,7 +25,7 @@ def login_post():
     response = make_response(redirect(url_for('main.todos')))
     additional_claims = {"user": user.name}
     access_token = create_access_token(identity=user.id, fresh=True, additional_claims=additional_claims)
-    refresh_token = create_refresh_token(user.id)
+    refresh_token = create_refresh_token(user.id, additional_claims=additional_claims)
     response.set_cookie('access_token_cookie', access_token)
     response.set_cookie('refresh_token_cookie', refresh_token)
     current_app.config['USER_AUTHENTICATED'] = True
