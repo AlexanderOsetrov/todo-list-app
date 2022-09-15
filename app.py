@@ -6,7 +6,7 @@ from flask import Flask, current_app
 from flask_restful import Api
 from logging.config import dictConfig
 from flask_jwt_extended import JWTManager, verify_jwt_in_request
-from resources.item import Item, ItemList
+from resources.item import Item, ItemList, UserItem
 from resources.user import UserRegister, UserLogin
 from models.user import UserModel
 from werkzeug.security import generate_password_hash
@@ -73,6 +73,8 @@ def register_api_resources(api):
     api.add_resource(Item, '/api/items/<item_id>')
     api.add_resource(UserRegister, '/api/register')
     api.add_resource(UserLogin, '/api/login')
+    api.add_resource(UserItem, '/api/user/<user_id>/items', endpoint="user_items")
+    api.add_resource(UserItem, '/api/user/<user_id>/items/<item_id>')
 
 
 def create_default_admin(flask_app):

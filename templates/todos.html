@@ -53,7 +53,7 @@
 	<script src="js/routers/router.js"></script>
 	<script src="js/app.js"></script>
 	<script>
-		app.todos.url = '{{ url_for("items") }}';
+		app.todos.url = '{{ url_for("user_items", user_id=user_id) }}';
 		app.todos.fetch({{ todos | tojson }});
 	</script>
 </div>

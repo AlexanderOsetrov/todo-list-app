@@ -8,6 +8,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(100))
+    items = db.relationship("ItemModel", lazy="dynamic")
 
     def __init__(self, email, password, name):
         self.email = email
@@ -15,7 +16,8 @@ class UserModel(db.Model):
         self.name = name
 
     def json(self):
-        return {'id': self.id, 'email': self.email, 'name': self.name}
+        return {'id': self.id, 'email': self.email,
+                'name': self.name, 'items': [item.json() for item in self.items.all()]}
 
     def save_to_db(self):
         db.session.add(self)
