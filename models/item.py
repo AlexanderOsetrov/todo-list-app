@@ -9,7 +9,6 @@ class ItemModel(db.Model):
     completed = db.Column(db.Boolean)
     order = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    user = db.relationship('UserModel')
 
     def __init__(self, title, completed, order, user_id):
         self.title = title

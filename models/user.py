@@ -8,7 +8,7 @@ class UserModel(db.Model):
     email = db.Column(db.String(100), unique=True)
     password = db.Column(db.String(100))
     name = db.Column(db.String(100))
-    items = db.relationship("ItemModel", lazy="dynamic")
+    items = db.relationship("ItemModel", lazy="dynamic", cascade="all, delete")
 
     def __init__(self, email, password, name):
         self.email = email
