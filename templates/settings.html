@@ -12,103 +12,10 @@
     </ul>
     <div class="tab-content" id="settingsTabContent">
         <div class="tab-pane fade show active" id="users" role="tabpanel" aria-labelledby="users-tab">
-            {% with messages = get_flashed_messages() %}
-                {% if messages %}
-                <div class="alert alert-danger" role="alert">
-                    {{ messages[0] }}
-                </div>
-            {% endif %}
-            {% endwith %}
-            <table class="table">
-                <thead>
-                    <tr class="table-danger">
-                        <th scope="col">ID</th>
-                        <th scope="col">Name</th>
-                        <th scope="col">Email</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for user in users %}
-                    <tr>
-                        <th scope="row">{{ user.id }}</th>
-                        <td>{{ user.name }}</td>
-                        <td>{{ user.email }}</td>
-                        <td>
-                            <button type="button" class="btn btn-outline-danger">Edit</button>
-                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmUserDelete{{ user.id }}">Delete</button>
-                            <div class="modal fade" id="confirmUserDelete{{ user.id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmUserDeleteLabel">Confirm User Deletion</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete user '{{ user.name }}' ?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a href="{{ url_for('main.delete_user', user_id=user.id) }}">
-                                                <button type="button" class="btn btn-outline-danger">Delete</button>
-                                            </a>
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+            {% include '_users_tab.html' %}
         </div>
         <div class="tab-pane fade" id="items" role="tabpanel" aria-labelledby="items-tab">
-            <table class="table">
-                <thead>
-                    <tr class="table-danger">
-                        <th scope="col">ID</th>
-                        <th scope="col">Todo</th>
-                        <th scope="col">Completed</th>
-                        <th scope="col">Order</th>
-                        <th scope="col">User ID</th>
-                        <th scope="col">Action</th>
-                    </tr>
-                </thead>
-                <tbody>
-                {% for item in items %}
-                    <tr>
-                        <th scope="row">{{ item.item_id }}</th>
-                        <td>{{ item.title }}</td>
-                        <td>{{ item.completed }}</td>
-                        <td>{{ item.order }}</td>
-                        <td>{{ item.user_id }}</td>
-                        <td>
-                            <button type="button" class="btn btn-outline-danger">Edit</button>
-                            <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmItemDelete{{ item.item_id }}">Delete</button>
-                            <div class="modal fade" id="confirmItemDelete{{ item.item_id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
-                                <div class="modal-dialog modal-dialog-centered">
-                                    <div class="modal-content">
-                                        <div class="modal-header">
-                                            <h5 class="modal-title" id="confirmItemDeleteLabel">Confirm Item Deletion</h5>
-                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                        </div>
-                                        <div class="modal-body">
-                                            Are you sure you want to delete item '{{ item.title }}' ?
-                                        </div>
-                                        <div class="modal-footer">
-                                            <a href="{{ url_for('main.delete_item', item_id=item.item_id) }}">
-                                                <button type="button" class="btn btn-outline-danger">Delete</button>
-                                            </a>
-                                            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </td>
-                    </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+            {% include '_items_tab.html' %}
         </div>
     </div>
 </div>

@@ -11,6 +11,8 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
+    if current_app.config['USER_AUTHENTICATED']:
+        return redirect(url_for('main.index'))
     return render_template('login.html')
 
 

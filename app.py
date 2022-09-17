@@ -13,8 +13,10 @@ def create_app():
     jwt = JWTManager(flask_app)
     from views.auth import auth as auth_blueprint
     from views.main import main as main_blueprint
+    from views.settings import settings as settings_blueprint
     flask_app.register_blueprint(auth_blueprint)
     flask_app.register_blueprint(main_blueprint)
+    flask_app.register_blueprint(settings_blueprint)
     db.init_app(flask_app)
     return flask_app
 

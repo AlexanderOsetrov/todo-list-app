@@ -22,20 +22,22 @@
                                 <a class="nav-link" href="{{ url_for('main.todos') }}">Todos</a>
                             </li>
                             {% endif %}
+                            {% if not config.USER_AUTHENTICATED %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('auth.login') }}">Login</a>
                             </li>
+                            {% endif %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('auth.signup') }}">Sign Up</a>
                             </li>
+                            {% if config.CURRENT_USER == "admin" %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url_for('settings.get_settings') }}">Settings</a>
+                            </li>
+                            {% endif %}
                             {% if config.USER_AUTHENTICATED %}
                             <li class="nav-item">
                                 <a class="nav-link" href="{{ url_for('auth.logout') }}">Logout</a>
-                            </li>
-                            {% endif %}
-                            {% if config.CURRENT_USER == "admin" %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ url_for('main.settings') }}">Settings</a>
                             </li>
                             {% endif %}
                             {% if config.USER_AUTHENTICATED %}
