@@ -21,7 +21,9 @@
                         <td>{{ user.name }}</td>
                         <td>{{ user.email }}</td>
                         <td>
-                            <button type="button" class="btn btn-outline-danger">Edit</button>
+                            <a href="{{ url_for('settings.edit_user', user_id=user.id) }}">
+                                <button type="button" class="btn btn-outline-danger">Edit</button>
+                            </a>
                             <button type="button" class="btn btn-outline-danger" data-bs-toggle="modal" data-bs-target="#confirmUserDelete{{ user.id }}">Delete</button>
                             <div class="modal fade" id="confirmUserDelete{{ user.id }}" tabindex="-1" aria-labelledby="confirmDeleteLabel" aria-hidden="true">
                                 <div class="modal-dialog modal-dialog-centered">
