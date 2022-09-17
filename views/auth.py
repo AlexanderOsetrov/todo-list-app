@@ -11,6 +11,8 @@ auth = Blueprint('auth', __name__)
 
 @auth.route('/login')
 def login():
+    if current_app.config['USER_AUTHENTICATED']:
+        return redirect(url_for('main.index'))
     return render_template('login.html')
 
 
@@ -50,7 +52,10 @@ def signup_post():
     new_user = UserModel(email=email, name=name, password=generate_password_hash(password, method='sha256'))
     db.session.add(new_user)
     db.session.commit()
-    return redirect(url_for('auth.login'))
+    if current_app.config['USER_AUTHENTICATED']:
+        return redirect(url_for('main.index'))
+    else:
+        return redirect(url_for('auth.login'))
 
 
 @auth.route('/logout')

@@ -14,7 +14,7 @@ def index():
 
 
 @main.route('/todos')
-@jwt_required()
+@jwt_required(refresh=True)
 def todos():
     verify_authentication()
     user_id = get_jwt_identity()

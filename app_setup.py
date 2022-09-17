@@ -79,6 +79,7 @@ def verify_authentication():
     if token is None:
         current_app.logger.debug(f"JWT Token is missing.")
         current_app.config['USER_AUTHENTICATED'] = False
+        current_app.config['CURRENT_USER'] = 'guest'
     else:
         current_app.logger.debug("JWT Token found: %s" % token[-1])
         current_app.config['USER_AUTHENTICATED'] = True
