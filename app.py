@@ -6,7 +6,7 @@ from app_setup import set_app_config, register_api_resources, create_default_adm
 
 
 def create_app():
-    flask_app = Flask(__name__, static_url_path='')
+    flask_app = Flask(__name__, static_url_path='', static_folder='static')
     set_app_config(flask_app)
     api = Api(flask_app)
     register_api_resources(api)
